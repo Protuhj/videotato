@@ -17,7 +17,11 @@ Perfect for gaming while playing random videos from YouTube channels or playlist
 - AutoHotkey (latest version): https://autohotkey.com/download/
 
 ### Setup YouTube API Access
-You'll need to create a YouTube V3 API project, in order to get a client-side API key.
+
+- Install the Python libraries for Google API access: 
+    - Run: `python -m pip install --upgrade google-api-python-client`
+
+You'll then need to create a YouTube V3 API project, in order to get a client-side API key.
 
 - Go [here](https://developers.google.com/youtube/registering_an_application) and follow the instructions for creating an API application.
 
