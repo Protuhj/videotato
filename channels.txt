@@ -1,0 +1,15 @@
+# Comment lines start with the # character
+# Entries are the channel ID (These start with 'UC')
+# If you only have a username, go to: https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.channels.list?part=snippet&fields=items/id
+# put the username in the 'forUsername' field
+# and then hit 'Execute without OAuth'
+# If a channel is found, it will be the only entry in the Response at the bottom of the page for 'id'
+
+# Funhaus
+UCboMX_UNgaPBsUOIgasn3-Q
+
+# CaptainDisillusion
+UCEOXxzW2vU0P-0THehuIIeg
+
+# Kurzgesagt - In a Nutshell
+UCsXVk37bltHxD1rDPwtNM8Q
