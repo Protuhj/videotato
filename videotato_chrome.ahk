@@ -60,3 +60,9 @@ Launch_Mail::
     }
     ControlSend, , %prefixStr%{Enter} , Google Chrome
 return
+
+; Remove the last result's text from all output files (for videos you don't want to play again)
+; LEFT alt + LEFT shift + delete (more difficult since it's destructive)
+<!<+Del::
+    RunWait, python removeLastVideo.py,,HIDE
+return

@@ -87,6 +87,9 @@ Currently the only browser supported is Chrome, Firefox can be added in the futu
 
 - `F7`: cycles through tabs via the `ctrl+PgUp` hotkey that Chrome handles.
 - `F12`: toggles the AutoHotkey script on or off, in case you don't want the script responding to key presses.  
+- `LAlt+LShift+Del`: removes the last random video from all local data files.  
+    - Use this when you don't ever want to play a video again.  
+    - It basically reads the contents of `result.txt` and searches the `*_data` folders for matches, and removes the `result.txt` contents from those files.
 
 ##### With YouTube Chrome tab open:
 - `Media_next`: Sends shift+n (capital N) to YouTube to hit the 'Next' button. This will tell YouTube to play the next video.  
