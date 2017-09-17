@@ -49,7 +49,6 @@ Launch_Mail::
 
     ; Select the address bar (ctrl+l)
     ControlSend, , ^l , Google Chrome
-    Sleep,100
     prefixStr = ""
     if ( InStr( vidya, "http", true ) ) {
         ; If the result has a complete URL, use it verbatim
@@ -58,7 +57,14 @@ Launch_Mail::
         ; Otherwise, assume it's a YouTube video ID.
         prefixStr := "https://www.youtube.com/watch?v=" . vidya
     }
-    ControlSend, , %prefixStr%{Enter} , Google Chrome
+    ; Cache clipboard contents
+    temp := clipboardall
+    ; Put the URL onto the clipboard
+    clipboard := prefixStr
+    ; Paste the clipboard to the URL box
+    ControlSend, , ^v{Enter} , Google Chrome
+    ; Restore the cached clipboard contents
+    clipboard := temp
 return
 
 ; Remove the last result's text from all output files (for videos you don't want to play again)
