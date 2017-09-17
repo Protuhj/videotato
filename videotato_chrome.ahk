@@ -5,50 +5,25 @@ return
 
 ; Switch Chrome tab
 f7::
-    SetTitleMatchMode, 2
-
-    ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
-
-    ControlFocus,,ahk_id %outputvar%
-
-    ControlSend, , ^{PgUp} , Google Chrome
+    SendToChrome("^{PgUp}")
 return
 
 
 ; Skip to next in playlist
 Media_next::
-    SetTitleMatchMode, 2
-
-    ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
-
-    ControlFocus,,ahk_id %outputvar%
-
-    ControlSend, , +n , Google Chrome
+    SendToChrome("+n")
 return
 
 ; Toggle play
 Media_Play_Pause::
-    SetTitleMatchMode, 2
-
-    ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
-
-    ControlFocus,,ahk_id %outputvar%
-
-    ControlSend, , k , Google Chrome
+    SendToChrome("k")
 return
 
 ; Play random video
 Launch_Mail::
     RunWait, python randomLine.py,,HIDE
     FileRead, vidya, result.txt
-    SetTitleMatchMode, 2
 
-    ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
-
-    ControlFocus,,ahk_id %outputvar%
-
-    ; Select the address bar (ctrl+l)
-    ControlSend, , ^l , Google Chrome
     prefixStr = ""
     if ( InStr( vidya, "http", true ) ) {
         ; If the result has a complete URL, use it verbatim
@@ -57,12 +32,16 @@ Launch_Mail::
         ; Otherwise, assume it's a YouTube video ID.
         prefixStr := "https://www.youtube.com/watch?v=" . vidya
     }
+
     ; Cache clipboard contents
     temp := clipboardall
+
     ; Put the URL onto the clipboard
     clipboard := prefixStr
-    ; Paste the clipboard to the URL box
-    ControlSend, , ^v{Enter} , Google Chrome
+
+    ; Focus address bar then paste the clipboard to the URL box
+    SendToChrome("^l^v{Enter}")
+
     ; Restore the cached clipboard contents
     clipboard := temp
 return
@@ -72,3 +51,29 @@ return
 <!<+Del::
     RunWait, python removeLastVideo.py,,HIDE
 return
+
+; Helper function to send keys directly to Chrome if it's focused,
+; otherwise use ControlFocus and ControlSend to do the work.
+SendToChrome(controlSet) {
+    if (IsChromeActive() = False) {
+        SetTitleMatchMode, 2
+
+        ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
+
+        ControlFocus,,ahk_id %outputvar%
+        ControlSend, , %controlSet% , Google Chrome
+    } else {
+        Send, %controlSet%
+    }
+}
+
+; Helper function to see if the user already has Chrome focused.
+; ControlSend doesn't seem to work well when the window is already focused.
+IsChromeActive() {
+    WinGetClass, class, A
+    if (class = "Chrome_WidgetWin_1") {
+        return True
+    } else {
+        return False
+    }
+}
