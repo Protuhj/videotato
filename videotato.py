@@ -143,7 +143,7 @@ def processPlaylists():
         if ( os.path.isfile( "playlist_data/%s.items" % thePlaylist ) ):
             if ( age_limit is -1 ):
                 print( "Not getting playlist items for %s, its age limit is infinite (-1)" % thePlaylist )
-                doGet = false
+                doGet = False
             elif ( os.path.isfile( "playlist_data/%s.time" % thePlaylist ) ):
                 timeFile = open( "playlist_data/%s.time" % thePlaylist, "r" )
                 timestamp = timeFile.read()
@@ -183,7 +183,7 @@ def processMusic():
         if ( os.path.isfile( "music_data/%s.items" % thePlaylist ) ):
             if ( age_limit is -1 ):
                 print( "Not getting music playlist items for %s, its age limit is infinite (-1)" % thePlaylist )
-                doGet = false
+                doGet = False
             elif ( os.path.isfile( "music_data/%s.time" % thePlaylist ) ):
                 timeFile = open( "music_data/%s.time" % thePlaylist, "r" )
                 timestamp = timeFile.read()
