@@ -1,6 +1,8 @@
 client_secret.json
 channel_data/*
 playlist_data/*
+music_data/*
+plugins/*
 videotato-oauth2.json
 *.pyc
 result.txt

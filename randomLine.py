@@ -8,6 +8,7 @@ random.seed()
 # Weight the channels higher, to play more videos from channels, versus playlists.
 CHANNELS_WEIGHT = config.videotato_config['CHANNEL_WEIGHT']
 PLAYLISTS_WEIGHT = config.videotato_config['PLAYLIST_WEIGHT']
+MUSIC_WEIGHT = config.videotato_config['MUSIC_WEIGHT']
 
 def random_line(afile):
     line = next(afile)
@@ -29,18 +30,25 @@ def weighted_choice(choices):
 
 
 def pickWhich():
-    assert ( len( CHANNELS ) > 0 or len( PLAYLISTS ) > 0 )
-    if ( len( CHANNELS ) is 0 ):
+    assert ( len( CHANNELS ) > 0 or len( PLAYLISTS ) > 0 or len( MUSIC ) > 0 )
+    chanLen = len( CHANNELS )
+    playlistLen = len ( PLAYLISTS )
+    musicLen = len( MUSIC )
+    if ( chanLen is 0 and musicLen is 0 ):
         return "PLAYLISTS"
-    elif( len( PLAYLISTS ) is 0):
+    elif( chanLen is 0 and playlistLen is 0 ):
+        return "MUSIC"
+    elif( playlistLen is 0 and musicLen is 0 ):
         return "CHANNELS"
 
-    return weighted_choice( [ ( "CHANNELS", len(CHANNELS) * CHANNELS_WEIGHT ), ("PLAYLISTS", len(PLAYLISTS) * PLAYLISTS_WEIGHT ) ] )
+
+    return weighted_choice( [ ( "CHANNELS", len(CHANNELS) * CHANNELS_WEIGHT ), ("PLAYLISTS", len(PLAYLISTS) * PLAYLISTS_WEIGHT ), ("MUSIC", len(MUSIC) * MUSIC_WEIGHT ) ] )
 
 
 WHICH = []
 CHANNELS = []
 PLAYLISTS = []
+MUSIC = []
 
 if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/channels.txt" ) ):
     myutil.readInputFile( os.path.dirname( os.path.realpath(__file__) ) + "/channels.txt", CHANNELS )
@@ -52,6 +60,11 @@ if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/playlists
 else:
     print( "The file, %s, doesn't exist!" % os.path.dirname( os.path.realpath(__file__) ) + "/playlists.txt" )
 
+if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/music.txt" ) ):
+    myutil.readInputFile( os.path.dirname( os.path.realpath(__file__) ) + "/music.txt", MUSIC )
+else:
+    print( "The file, %s, doesn't exist!" % os.path.dirname( os.path.realpath(__file__) ) + "/music.txt" )
+
 if ( len( CHANNELS ) > 0 ):
     WHICH.append( "CHANNELS" )
 else:
@@ -61,6 +74,12 @@ if ( len( PLAYLISTS ) > 0 ):
     WHICH.append( "PLAYLISTS" )
 else:
     print( "No playlists in playlists.txt to process!\n" )
+
+if ( len( MUSIC ) > 0 ):
+    WHICH.append( "MUSIC" )
+else:
+    print( "No music in music.txt to process!\n" )
+
 if ( len( WHICH ) > 0 ):
     which = pickWhich()
     if ( which is "CHANNELS" ):
@@ -73,6 +92,12 @@ if ( len( WHICH ) > 0 ):
         print( "Picking a playlist." )
         thePlaylist = random.choice( PLAYLISTS ).strip().split( "," )[0]
         vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r ")
+        theVideo = random_line( vidFile ).strip()
+        vidFile.close()
+    elif ( which is "MUSIC" ):
+        print( "Picking a music playlist." )
+        thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
+        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r ")
         theVideo = random_line( vidFile ).strip()
         vidFile.close()
 

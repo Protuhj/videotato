@@ -164,23 +164,84 @@ def processPlaylists():
             time_file.write( str( int( time.time() ) ) )
             del VIDEOS[:]
 
+# Process data from the music.txt
+def processMusic():
+    print( "################# Processing Music ##################" )
+    if ( not os.path.isdir( "music_data" ) ):
+        os.makedirs( "music_data" )
+    for music_playlist in MUSIC:
+        tokens = music_playlist.split( "," )
+        thePlaylist = tokens[0]
+
+        # Default to 7 days cache time for music
+        age_limit = 604800
+        doGet = True
+
+        if ( len( tokens ) > 1 ):
+            age_limit = int( tokens[1] )
+
+        if ( os.path.isfile( "music_data/%s.items" % thePlaylist ) ):
+            if ( age_limit is -1 ):
+                print( "Not getting music playlist items for %s, its age limit is infinite (-1)" % thePlaylist )
+                doGet = false
+            elif ( os.path.isfile( "music_data/%s.time" % thePlaylist ) ):
+                timeFile = open( "music_data/%s.time" % thePlaylist, "r" )
+                timestamp = timeFile.read()
+                timeFile.close()
+                timestamp = int( timestamp.strip() )
+                if ( ( int( time.time() ) - timestamp ) < age_limit ):
+                    print( "Music playlist %s isn't out of date yet. %i seconds to go before it's old. Age limit is: %i seconds" % ( thePlaylist, age_limit - ( int( time.time() ) - timestamp ), age_limit ) )
+                    doGet = False
+        if ( doGet ):
+            print( "### Getting full list of videos for music playlist %s\n" % thePlaylist )
+            playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
+            out_file = open("music_data/%s.items" % thePlaylist, "w")
+            for video in VIDEOS:
+                out_file.write( video )
+                out_file.write('\n')
+            out_file.close()
+            time_file = open("music_data/%s.time" % thePlaylist, "w")
+            time_file.write( str( int( time.time() ) ) )
+            del VIDEOS[:]
+
 VIDEOS = []
 CHANNELS = []
 
+
+#-- Channels --#
 with open("channels.txt", "r") as ins:
     myutil.readInputFile( "channels.txt", CHANNELS )
-
-PLAYLISTS = []
-if ( os.path.isfile( "playlists.txt" ) ):
-    myutil.readInputFile( "playlists.txt", PLAYLISTS )
 
 if ( len( CHANNELS ) > 0 ):
     processChannels()
 else:
     print( "No channels in channels.txt to process!\n" )
 
+#-----------#
+
+#-- PLAYLISTS --#
+
+PLAYLISTS = []
+if ( os.path.isfile( "playlists.txt" ) ):
+    myutil.readInputFile( "playlists.txt", PLAYLISTS )
+
 if ( len( PLAYLISTS ) > 0 ):
     processPlaylists()
 else:
     print( "No playlists in playlists.txt to process!\n" )
 
+#-------------#
+
+#-- MUSIC --#
+
+MUSIC = []
+if ( os.path.isfile( "music.txt" ) ):
+    myutil.readInputFile( "music.txt", MUSIC )
+
+
+if ( len( MUSIC ) > 0 ):
+    processMusic()
+else:
+    print( "No music in music.txt to process!\n" )
+
+#-----------#

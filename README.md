@@ -18,7 +18,7 @@ Perfect for gaming while playing random videos from YouTube channels or playlist
 
 ### Setup YouTube API Access
 
-- Install the Python libraries for Google API access: 
+- Install the Python libraries for Google API access:
     - Run: `python -m pip install --upgrade google-api-python-client`
 
 You'll then need to create a YouTube V3 API project, in order to get a client-side API key.
@@ -44,26 +44,26 @@ Choose 'Other' as the type, and fill out the information it asks for.
 
 ### Personalization: Channels
 
-Open the channels.txt file to view the channels that I've pre-filled it with.  
+Open the channels.txt file to view the channels that I've pre-filled it with.
 Comment lines start with `#`.
 
 Each channel should be on its own line, and it MUST be the channel ID (the ID will start with 'UC')
 
 - To get the channel ID, go to the channel's page on YouTube in a browser.
-- If their URL looks like: `https://www.youtube.com/channel/UC...`  
+- If their URL looks like: `https://www.youtube.com/channel/UC...`
 Then just grab the full `UC...` text and paste it into the channels.txt file.
-- If their URL looks like: `https://www.youtube.com/user/...`  
+- If their URL looks like: `https://www.youtube.com/user/...`
 Then do the following:
 
 - Go to: `https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.channels.list?part=snippet&fields=items/id`
-    - Put the username into the 'forUsername' field  
+    - Put the username into the 'forUsername' field
     - Then hit 'Execute without OAuth'
-    - If a channel is found, it will be the only entry in the Response at the bottom of the page for 'id'  
+    - If a channel is found, it will be the only entry in the Response at the bottom of the page for 'id'
     - Grab the `UC...` text and paste it into the channels.txt file.
 
-### Personalization: Playlists
+### Personalization: Playlists  and Music
 
-Open the playlists.txt file to view the channels that I've pre-filled it with.  
+Open the playlists.txt file to view the channels that I've pre-filled it with.
 Comment lines start with `#`.
 
 - Entries are a comma-separated list of playlist ID, then cache-limit age in seconds.
@@ -76,9 +76,9 @@ Comment lines start with `#`.
 
 ## AutoHotkey
 
-Currently the only browser supported is Chrome, Firefox can be added in the future pretty easily.
+Currently the only browser supported is Chrome, Firefox can be added in the future pretty easily (hopefully).
 
-- `videotato_chrome.ahk` contains the script needed to actually "Do the Magic" while you're gaming/messing around on a different application.  
+- `videotato_chrome.ahk` contains the script needed to actually "Do the Magic" while you're gaming/messing around on a different application.
     - To run this AutoHotkey script, right click on it and either go to 'Run Script'
     - Or right-click on it and go to 'Compile Script' and then run the `videotato_chrome.exe`.
 
@@ -86,21 +86,28 @@ Currently the only browser supported is Chrome, Firefox can be added in the futu
 ##### (view https://autohotkey.com/docs/KeyList.htm for a full list of possible hotkeys)
 
 - `F7`: cycles through tabs via the `ctrl+PgUp` hotkey that Chrome handles.
-- `F12`: toggles the AutoHotkey script on or off, in case you don't want the script responding to key presses.  
-- `LAlt+LShift+Del`: removes the last random video from all local data files.  
-    - Use this when you don't ever want to play a video again.  
+- `F12`: toggles the AutoHotkey script on or off, in case you don't want the script responding to key presses.
+- `LAlt+LShift+Del`: removes the last random video from all local data files.
+    - Use this when you don't ever want to play a video again.
     - It basically reads the contents of `result.txt` and searches the `*_data` folders for matches, and removes the `result.txt` contents from those files.
+- `LAlt + LShift + LCtrl + F5`: refresh the currently active tab
 
 ##### With YouTube Chrome tab open:
-- `Media_next`: Sends shift+n (capital N) to YouTube to hit the 'Next' button. This will tell YouTube to play the next video.  
+- `Media_next`: Sends shift+n (capital N) to YouTube to hit the 'Next' button. This will tell YouTube to play the next video.
     - The `media_next` key requires you to have a keyboard with these media keys.
     - You might have an Fn key or dedicated media keys.
     - If not, you can change the key to another key you'd be comfortable using.
 
-- `Media_Play_Pause`: Sends k to YouTube to hit the 'Next' button. This will tell YouTube to play/pause the current video.  
+- `Media_Play_Pause`: Sends k to YouTube to hit the 'Next' button. This will tell YouTube to play/pause the current video.
     - The `Media_Play_Pause` key requires you to have a keyboard with these media keys.
     - You might have an Fn key or dedicated media keys.
     - If not, you can change the key to another key you'd be comfortable using.
+- `LCtrl+left arrow`:
+    - Goes back 10 seconds in the YouTube video.
+    - Sends the 'J' key to the Chrome tab.
+- `LCtrl+right arrow`:
+    - Goes forward 10 seconds in the YouTube video.
+    - Sends the 'L' key to the Chrome tab.
 
 ##### Will Overwrite URL in Currently-Focused Tab:
 - `Launch_Mail`:
@@ -109,6 +116,9 @@ Currently the only browser supported is Chrome, Firefox can be added in the futu
     - If not, you can change the key to another key you'd be comfortable using.
     - Calls `python randomLine.py` which dumps the result to `result.txt`
     - This is read by the script, and changes the URL of the active tab to match the contents of `result.txt`.
+- `Browser_Home`:
+    - Plays the previous randomized video in the current Chrome tab.
+    - Doesn't change `result.txt` in case you want to go back to the video later.
 
 
 

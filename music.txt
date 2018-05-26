@@ -1,0 +1,24 @@
+# Comment lines start with the # character
+# Entries are a comma-separated list of playlist ID, then cache-limit age in seconds.
+# If you set the cache-limit to -1, the playlist will never be updated, and the .items file for it will need to be deleted before it is updated.
+
+# New electronic music playlist, I think it's updated once a day?
+PLFPg_IUxqnZNTAbUMEZ76_snWd-ED5en7,76400
+
+# Daily 40 music playlist, I think it's updated once a day?
+#PLFgquLnL59akEDVznnoh3KT0EM5DVczAq,76400
+
+# Dance/EDM Hotlist, not sure of update frequency, check once a day.
+PLFgquLnL59akYpPgfxzsw5jlPZ9R6HewT,76400
+
+# Electronic music Hotlist, check once a day.
+PLFgquLnL59akXPIHrEZci0oouw4dArE0D,76400
+
+# Trap music mix
+RDQMARQLlfkN6JM,76400
+
+# Retrowave music
+PLz7dAwOvcNgqRP9AI0F3ADxw8uR3yqteO
+
+# 90s music playlist
+PLZyqOyXxaVETqpHhT_c5GPmAPzhJpJ5K7,-1
