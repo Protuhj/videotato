@@ -4,6 +4,7 @@ import time
 import myutil
 import httplib2
 import config
+from pprint import pprint
 
 from datetime import datetime
 from apiclient.discovery import build
@@ -111,18 +112,21 @@ def processChannels():
             del VIDEOS[:]
         else:
             print("### Getting full list of videos for %s\n" % channel)
-            # Getting the 'playlist' for all user videos works best for grabbing all videos.
-            playlistitems_for_playlistid(service, part='contentDetails', playlistId=channel.replace( 'UC', 'UU' ), maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
-            out_file = open("channel_data/%s.items" % channel, "w")
-            for video in VIDEOS:
-                out_file.write( video )
-                out_file.write( '\n' )
-            out_file.close()
-            time_file = open( "channel_data/%s.time" % channel, "w" )
-            # Write the retrieval time to the .time file using the ISO8601 format that YouTube expects.
-            time_file.write( datetime.now().isoformat() )
-            # Clear out the list for the next call
-            del VIDEOS[:]
+            try:
+                # Getting the 'playlist' for all user videos works best for grabbing all videos.
+                playlistitems_for_playlistid(service, part='contentDetails', playlistId=channel.replace( 'UC', 'UU' ), maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
+                out_file = open("channel_data/%s.items" % channel, "w")
+                for video in VIDEOS:
+                    out_file.write( video )
+                    out_file.write( '\n' )
+                out_file.close()
+                time_file = open( "channel_data/%s.time" % channel, "w" )
+                # Write the retrieval time to the .time file using the ISO8601 format that YouTube expects.
+                time_file.write( datetime.now().isoformat() )
+                # Clear out the list for the next call
+                del VIDEOS[:]
+            except:
+                print( "####### Failed to query playlist: %s\n" %thePlaylist )
 
 # Process data from the playlists.txt
 def processPlaylists():
@@ -154,15 +158,18 @@ def processPlaylists():
                     doGet = False
         if ( doGet ):
             print( "### Getting full list of videos for playlist %s\n" % thePlaylist )
-            playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
-            out_file = open("playlist_data/%s.items" % thePlaylist, "w")
-            for video in VIDEOS:
-                out_file.write( video )
-                out_file.write('\n')
-            out_file.close()
-            time_file = open("playlist_data/%s.time" % thePlaylist, "w")
-            time_file.write( str( int( time.time() ) ) )
-            del VIDEOS[:]
+            try:
+                playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
+                out_file = open("playlist_data/%s.items" % thePlaylist, "w")
+                for video in VIDEOS:
+                    out_file.write( video )
+                    out_file.write('\n')
+                out_file.close()
+                time_file = open("playlist_data/%s.time" % thePlaylist, "w")
+                time_file.write( str( int( time.time() ) ) )
+                del VIDEOS[:]
+            except:
+                print( "####### Failed to query playlist: %s\n" %thePlaylist )
 
 # Process data from the music.txt
 def processMusic():
@@ -194,19 +201,21 @@ def processMusic():
                     doGet = False
         if ( doGet ):
             print( "### Getting full list of videos for music playlist %s\n" % thePlaylist )
-            playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
-            out_file = open("music_data/%s.items" % thePlaylist, "w")
-            for video in VIDEOS:
-                out_file.write( video )
-                out_file.write('\n')
-            out_file.close()
-            time_file = open("music_data/%s.time" % thePlaylist, "w")
-            time_file.write( str( int( time.time() ) ) )
-            del VIDEOS[:]
+            try:
+                playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
+                out_file = open("music_data/%s.items" % thePlaylist, "w")
+                for video in VIDEOS:
+                    out_file.write( video )
+                    out_file.write('\n')
+                out_file.close()
+                time_file = open("music_data/%s.time" % thePlaylist, "w")
+                time_file.write( str( int( time.time() ) ) )
+                del VIDEOS[:]
+            except:
+                print( "####### Failed to query playlist: %s\n" %thePlaylist )
 
 VIDEOS = []
 CHANNELS = []
-
 
 #-- Channels --#
 with open("channels.txt", "r") as ins:
@@ -243,5 +252,8 @@ if ( len( MUSIC ) > 0 ):
     processMusic()
 else:
     print( "No music in music.txt to process!\n" )
+
+if ( not os.path.isdir( "full_url_site_data" ) ):
+    os.makedirs( "full_url_site_data" )
 
 #-----------#

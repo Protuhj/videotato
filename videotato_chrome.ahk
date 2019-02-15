@@ -72,6 +72,30 @@ return
     SendToChrome("L")
 return
 
+; Scroll down a page
+; LEFT CTRL + PAGE DOWN
+<^PgDn::
+    SendToChrome("{PgDn}")
+return
+
+; Scroll up a page
+; LEFT CTRL + PAGE UP
+<^PgUp::
+    SendToChrome("{PgUp}")
+return
+
+; Scroll down a little
+; LEFT CTRL + LEFT SHIFT + PAGE DOWN
+<^<+PgDn::
+    SendToChrome("{Down}")
+return
+
+; Scroll down a little
+; LEFT CTRL + LEFT SHIFT + PAGE UP
+<^<+PgUp::
+    SendToChrome("{Up}")
+return
+
 GoToUrl(videoIDOrFullURL) {
     prefixStr = ""
     if ( InStr( videoIDOrFullURL, "http", true ) ) {

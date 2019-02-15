@@ -30,6 +30,10 @@ if ( os.path.isfile( "result.txt" ) ):
             removeTextInline( resultText, file )
         for file in glob.glob( 'playlist_data/*' ):
             removeTextInline( resultText, file )
+        for file in glob.glob( 'music_data/*' ):
+            removeTextInline( resultText, file )
+        for file in glob.glob( 'full_url_site_data/*' ):
+            removeTextInline( resultText, file )
     else:
         print( "Invalid result text: " + resultText )
 else:

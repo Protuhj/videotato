@@ -1,0 +1,10 @@
+# Enter in site names that you will add full URL entries to in the full_url_site_data folder
+# Example:
+# In this file, add a "netflix" line, then in the full_url_site_data folder, create a "netflix.items" file and add the full URLs to that file that you want to randomly choose from
+
+
+# Videos from Funhaus on the RT site.
+funhaus_rt
+
+# Videos from classic Inside Gaming on the RT site
+ig_classic_rt

@@ -9,6 +9,7 @@ random.seed()
 CHANNELS_WEIGHT = config.videotato_config['CHANNEL_WEIGHT']
 PLAYLISTS_WEIGHT = config.videotato_config['PLAYLIST_WEIGHT']
 MUSIC_WEIGHT = config.videotato_config['MUSIC_WEIGHT']
+FULL_URL_WEIGHT = config.videotato_config['FULL_URL_WEIGHT']
 
 def random_line(afile):
     line = next(afile)
@@ -30,25 +31,29 @@ def weighted_choice(choices):
 
 
 def pickWhich():
-    assert ( len( CHANNELS ) > 0 or len( PLAYLISTS ) > 0 or len( MUSIC ) > 0 )
+    assert ( len( CHANNELS ) > 0 or len( PLAYLISTS ) > 0 or len( MUSIC ) > 0 or len( FULL_URL ) > 0)
     chanLen = len( CHANNELS )
     playlistLen = len ( PLAYLISTS )
     musicLen = len( MUSIC )
-    if ( chanLen is 0 and musicLen is 0 ):
+    fullURLLen = len ( FULL_URL )
+    if ( chanLen is 0 and musicLen is 0 and fullURLLen is 0 ):
         return "PLAYLISTS"
-    elif( chanLen is 0 and playlistLen is 0 ):
+    elif( chanLen is 0 and playlistLen is 0 and fullURLLen is 0 ):
         return "MUSIC"
-    elif( playlistLen is 0 and musicLen is 0 ):
+    elif( playlistLen is 0 and musicLen is 0 and fullURLLen is 0 ):
         return "CHANNELS"
+    elif ( chanLen is 0 and playlistLen is 0 and musicLen is 0 ):
+        return "FULL_URL"
 
 
-    return weighted_choice( [ ( "CHANNELS", len(CHANNELS) * CHANNELS_WEIGHT ), ("PLAYLISTS", len(PLAYLISTS) * PLAYLISTS_WEIGHT ), ("MUSIC", len(MUSIC) * MUSIC_WEIGHT ) ] )
+    return weighted_choice( [ ( "CHANNELS", len(CHANNELS) * CHANNELS_WEIGHT ), ("PLAYLISTS", len(PLAYLISTS) * PLAYLISTS_WEIGHT ), ("MUSIC", len(MUSIC) * MUSIC_WEIGHT ), ("FULL_URL", len(FULL_URL) * FULL_URL_WEIGHT ) ] )
 
 
 WHICH = []
 CHANNELS = []
 PLAYLISTS = []
 MUSIC = []
+FULL_URL = []
 
 if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/channels.txt" ) ):
     myutil.readInputFile( os.path.dirname( os.path.realpath(__file__) ) + "/channels.txt", CHANNELS )
@@ -65,6 +70,11 @@ if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/music.txt
 else:
     print( "The file, %s, doesn't exist!" % os.path.dirname( os.path.realpath(__file__) ) + "/music.txt" )
 
+if ( os.path.isfile( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_sites.txt" ) ):
+    myutil.readInputFile( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_sites.txt", FULL_URL )
+else:
+    print( "The file, %s, doesn't exist!" % os.path.dirname( os.path.realpath(__file__) ) + "/full_url_sites.txt" )
+
 if ( len( CHANNELS ) > 0 ):
     WHICH.append( "CHANNELS" )
 else:
@@ -79,6 +89,11 @@ if ( len( MUSIC ) > 0 ):
     WHICH.append( "MUSIC" )
 else:
     print( "No music in music.txt to process!\n" )
+
+if ( len( FULL_URL ) > 0 ):
+    WHICH.append( "FULL_URL" )
+else:
+    print( "No sites in full_url_sites.txt to process!\n" )
 
 if ( len( WHICH ) > 0 ):
     which = pickWhich()
@@ -98,6 +113,12 @@ if ( len( WHICH ) > 0 ):
         print( "Picking a music playlist." )
         thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
         vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r ")
+        theVideo = random_line( vidFile ).strip()
+        vidFile.close()
+    elif ( which is "FULL_URL" ):
+        print( "Picking a full url entry." )
+        theSite = random.choice( FULL_URL ).strip().split( "," )[0]
+        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r ")
         theVideo = random_line( vidFile ).strip()
         vidFile.close()
 
