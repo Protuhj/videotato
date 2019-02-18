@@ -1,10 +1,13 @@
 # For Roosterteeth.com content, this file should have the format:
-# <API URL to get episode list JSON>, <string to match entries in full_sites.txt>
+# <API URL to get episode list JSON>, <string to match entries in full_sites.txt>, [include paid-only content, optional, default: true]
 #
 # I'll leave getting the API URL as an exercise of the user at this point.
 
 # All Funhaus videos
-#https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt
+https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt
+
+# Public-only Funhaus videos
+# https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt_paid, false
 
 # All classic Inside Gaming videos
 #https://svod-be.roosterteeth.com/api/v1/seasons/inside-gaming-season-1/episodes?ph=2, ig_classic_rt

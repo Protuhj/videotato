@@ -6,7 +6,7 @@ import myutil
 
 
 
-def goGetJSON(fullAPIURL, output_file):
+def goGetJSON(fullAPIURL, output_file, allowPaidContent):
     output_dir = os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data"
     fullURLWithPageArg = fullAPIURL + "&order=asc&per_page=100&page={0}"
     max_pages = 1
@@ -48,14 +48,19 @@ def goGetJSON(fullAPIURL, output_file):
             # Now parse JSON
             for element in filecontents["data"]:
                 vidID = element["_id"]
+                vidURL = "https://roosterteeth.com/episode/%s" % element["attributes"]["slug"]
+                #vidURL = "https://roosterteeth.com%s" % element["canonical_links"]["self"]
                 if (lastRunVidID):
                     if ( lastRunVidID != element["_id"] ):
-                        print ("Skipping {0}".format( "URL: https://roosterteeth.com%s" % element["canonical_links"]["self"] ))
+                        print ("Skipping {0}".format( "URL: %s" % vidURL ))
                     else:
-                        print ("Matched {0}".format( "URL: https://roosterteeth.com%s" % element["canonical_links"]["self"] ))
+                        print ("Matched {0}".format( "URL: %s" % vidURL ))
                         lastRunVidID = None
                 else:
-                    outputFP.write( "https://roosterteeth.com%s\n" % element["canonical_links"]["self"] )
+                    if ( not allowPaidContent and element["attributes"]["is_sponsors_only"] ):
+                        print ("Skipping FIRST content {0}".format( "URL: %s" % vidURL ))
+                    else:
+                        outputFP.write( "%s\n" % vidURL )
 
             # Close URL object
             url.close()
@@ -76,9 +81,12 @@ RT_VIDS = []
 myutil.readInputFile( os.path.dirname( os.path.realpath(__file__) ) + "/rt_entries.txt", RT_VIDS )
 if ( len( RT_VIDS ) > 0 ):
     for line in RT_VIDS:
+        allowPaidContent = True
         tokens = line.split( "," )
         url = tokens[0].strip()
         media_token = tokens[1].strip()
-        goGetJSON( url, media_token )
+        if (len(tokens) > 2 ):
+            allowPaidContent = tokens[2].strip().lower() in ("yes", "true", "t", "1")
+        goGetJSON( url, media_token, allowPaidContent )
 else:
     print( "No sites in rt_entries.txt to process!\n" )
