@@ -2,6 +2,8 @@ import random
 import os
 import myutil
 import config
+import winsound
+import traceback
 
 random.seed()
 
@@ -45,8 +47,12 @@ def pickWhich():
     elif ( chanLen is 0 and playlistLen is 0 and musicLen is 0 ):
         return "FULL_URL"
 
-
-    return weighted_choice( [ ( "CHANNELS", len(CHANNELS) * CHANNELS_WEIGHT ), ("PLAYLISTS", len(PLAYLISTS) * PLAYLISTS_WEIGHT ), ("MUSIC", len(MUSIC) * MUSIC_WEIGHT ), ("FULL_URL", len(FULL_URL) * FULL_URL_WEIGHT ) ] )
+    chanWeight = len(CHANNELS) * CHANNELS_WEIGHT
+    playlistWeight = len(PLAYLISTS) * PLAYLISTS_WEIGHT
+    musicWeight = len(MUSIC) * MUSIC_WEIGHT
+    fullWeight = len(FULL_URL) * FULL_URL_WEIGHT
+    print ("Chan: {0} play: {1} music: {2} full: {3}".format(chanWeight, playlistWeight, musicWeight, fullWeight))
+    return weighted_choice( [ ( "CHANNELS", chanWeight ), ("PLAYLISTS", playlistWeight ), ("MUSIC", musicWeight ), ("FULL_URL", fullWeight ) ] )
 
 
 WHICH = []
@@ -97,32 +103,49 @@ else:
 
 if ( len( WHICH ) > 0 ):
     which = pickWhich()
-    if ( which is "CHANNELS" ):
-        print( "Picking a channel." )
-        theChannel = random.choice( CHANNELS ).strip()
-        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.items" % theChannel, "r ")
-        theVideo = random_line( vidFile ).strip()
-        vidFile.close()
-    elif ( which is "PLAYLISTS" ):
-        print( "Picking a playlist." )
-        thePlaylist = random.choice( PLAYLISTS ).strip().split( "," )[0]
-        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r ")
-        theVideo = random_line( vidFile ).strip()
-        vidFile.close()
-    elif ( which is "MUSIC" ):
-        print( "Picking a music playlist." )
-        thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
-        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r ")
-        theVideo = random_line( vidFile ).strip()
-        vidFile.close()
-    elif ( which is "FULL_URL" ):
-        print( "Picking a full url entry." )
-        theSite = random.choice( FULL_URL ).strip().split( "," )[0]
-        vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r ")
-        theVideo = random_line( vidFile ).strip()
-        vidFile.close()
+    try:
+        if ( which is "CHANNELS" ):
+            print( "Picking a channel." )
+            theChannel = random.choice( CHANNELS ).strip()
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.items" % theChannel, "r ")
+            theVideo = random_line( vidFile ).strip()
+            vidFile.close()
+        elif ( which is "PLAYLISTS" ):
+            print( "Picking a playlist." )
+            thePlaylist = random.choice( PLAYLISTS ).strip().split( "," )[0]
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r ")
+            theVideo = random_line( vidFile ).strip()
+            vidFile.close()
+        elif ( which is "MUSIC" ):
+            print( "Picking a music playlist." )
+            thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r ")
+            theVideo = random_line( vidFile ).strip()
+            vidFile.close()
+        elif ( which is "FULL_URL" ):
+            print( "Picking a full url entry." )
+            theSite = random.choice( FULL_URL ).strip().split( "," )[0]
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r ")
+            theVideo = random_line( vidFile ).strip()
+            vidFile.close()
+        else:
+            assert False, "Invalid WHICH"
 
-    print theVideo
-    open( "result.txt", "w").write(theVideo)
+        #inFile = open( "result.txt", "r")
+        #curResult = inFile.readline()
+        #inFile.close()
+        #f (curResult == theVideo):
+        #    print ("Prev: {0} new: {1}".format(curResult, theVideo))
+        print ("new: {0}".format(theVideo))
+
+        outFile = open( "result.txt", "w")
+        outFile.write(theVideo)
+        outFile.close()
+    except Exception as e:
+        with open('randomlineError.txt', 'w') as f:
+            f.write(str(e))
+            f.write(traceback.format_exc())
+        for i in range(10, 5, -1): winsound.Beep(i * 100, 30)
+
 else:
     print "Nothing to do!"

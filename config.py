@@ -9,7 +9,7 @@ videotato_config = dict(
     # Multiplicative weight for choosing music when getting a random video.
     MUSIC_WEIGHT = 2,
     # Multiplicative weight for choosing a full URL when getting a random video.
-    FULL_URL_WEIGHT = 5,
+    FULL_URL_WEIGHT = 30,
     # Option to play a little tone when deleting items from the local data
     # Default to False so people aren't confused by this when it happens.
     PLAY_SOUND_ON_DELETE = True
