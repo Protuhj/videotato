@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; F12                                       - toggle script on/off
-; F7                                        - switch Chrome tabs
+; F7                                        - switch tabs Left
+; Shift + F7                                - switch tabs Right
 ; Media_next                                - Skip to next in playlist
 ; Media_play_pause                          - Play/pause video (sends space to tab)
 ; LEFT alt + LEFT shift + LEFT ctrl + F5    - refresh current tab (sends F5 to tab)
@@ -9,10 +10,10 @@
 ; LEFT alt + LEFT shift + delete            - Remove the last result's text from all output files (for videos you don't want to play again)
 ; LEFT ctrl + left arrow                    - Go back 10 seconds in a video (sends 'J' to tab)
 ; LEFT ctrl + right arrow                   - Go forward 10 seconds in a video (sends 'L' to tab)
-; LEFT CTRL + PAGE DOWN                     - Scroll down using Page Down
-; LEFT CTRL + PAGE UP                       - Scroll up using Page Up
-; LEFT CTRL + LEFT SHIFT + PAGE DOWN        - Scroll down using the down arrow key
-; LEFT CTRL + LEFT SHIFT + PAGE UP-         - Scroll down using the up arrow key
+; LEFT ctrl + PAGE DOWN                     - Scroll down using Page Down
+; LEFT ctrl + PAGE UP                       - Scroll up using Page Up
+; LEFT ctrl + LEFT SHIFT + PAGE DOWN        - Scroll down using the down arrow key
+; LEFT ctrl + LEFT SHIFT + PAGE UP-         - Scroll down using the up arrow key
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #SingleInstance Force
 ; ##############################################################################################################################################
@@ -25,9 +26,15 @@ f12::
 Suspend,Toggle
 return
 
-; Switch tab
+; Switch tab Left
 f7::
     SendToBrowser("^{PgUp}")
+    ;SoundBeep
+return
+
+; Switch tab right
++f7::
+    SendToBrowser("^{PgDn}")
     ;SoundBeep
 return
 
