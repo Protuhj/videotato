@@ -1,4 +1,4 @@
-# videotato - v0.2
+# videotato - v0.3
 
 Watch random videos from YouTube without alt-tabbing to your browser.
 
