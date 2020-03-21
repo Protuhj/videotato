@@ -1,7 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; F12                                       - toggle script on/off
-; F7                                        - switch tabs Left
-; Shift + F7                                - switch tabs Right
+; F12                                       - Toggle script on/off
+; F7                                        - Switch tabs Left
+; Shift + F7                                - Switch tabs Right
+; Ctrl + Alt + T                            - Open a new tab
+; Ctrl + Alt + W                            - Close the current tab
 ; Media_next                                - Skip to next in playlist
 ; Media_play_pause                          - Play/pause video (sends space to tab)
 ; LEFT alt + LEFT shift + LEFT ctrl + F5    - refresh current tab (sends F5 to tab)
@@ -35,6 +37,20 @@ return
 ; Switch tab right
 +f7::
     SendToBrowser("^{PgDn}")
+    ;SoundBeep
+return
+
+; Ctrl + Alt + t
+; Open a new tab
+^!t::
+    SendToBrowser("^t")
+    ;SoundBeep
+return
+
+; Ctrl + Alt + w
+; Close the current tab
+^!w::
+    SendToBrowser("^w")
     ;SoundBeep
 return
 

@@ -1,4 +1,4 @@
-# videotato - v0.3
+# videotato - v0.4
 
 Watch random videos from YouTube without alt-tabbing to your browser.
 
@@ -90,7 +90,9 @@ Comment lines start with `#`.
 ##### (view https://autohotkey.com/docs/KeyList.htm for a full list of possible hotkeys)
 
 - `F7`: cycles left through tabs via the `ctrl+PgUp` hotkey that Chrome and Firefox handle.
-- `Shift+F7`: cycles right through tabs via the `ctrl+PgDn` hotkey that Chrome and Firefox handle.
+- `Shift + F7`: cycles right through tabs via the `ctrl+PgDn` hotkey that Chrome and Firefox handle.
+- `Ctrl + Alt + T`: Open a new tab
+- `Ctrl + Alt + W`: Close the current tab
 - `F12`: toggles the AutoHotkey script on or off, in case you don't want the script responding to key presses.
 - `LAlt + LShift + Del`: removes the last random video from all local data files.
     - Use this when you don't ever want to play a video again.
