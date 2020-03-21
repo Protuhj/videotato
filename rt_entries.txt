@@ -7,7 +7,7 @@
 https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt
 
 # Public-only Funhaus videos
-# https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt_paid, false
+# https://svod-be.roosterteeth.com/api/v1/episodes?channel_id=funhaus, funhaus_rt_free, false
 
 # All classic Inside Gaming videos
 #https://svod-be.roosterteeth.com/api/v1/seasons/inside-gaming-season-1/episodes?ph=2, ig_classic_rt

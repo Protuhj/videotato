@@ -54,32 +54,47 @@ def videoDetails(outFile, service, **kwargs):
 
     for result in results['items']:
         if ( 'contentDetails' in result ):
-            #outFile.write( result['contentDetails']['videoId'] )
-            outFile.write( result['id'] )
-            outFile.write( ',' )
-            outFile.write( result['contentDetails']['duration'] )
-            outFile.write( ',' )
-            outFile.write( result['snippet']['publishedAt'] )
-            outFile.write( '\n' )
+            try:
+                outString = result['id']
+                outString += ','
+                outString += result['contentDetails']['duration']
+                outString += ','
+                outString += result['snippet']['publishedAt']
+                outString += ','
+                outString += result['snippet']['title'].encode('ascii', 'ignore').replace(",", "" )
+                outString += '\n'
+                outFile.write( outString )
+            except:
+                print( "Failed on video: %s" % result['snippet']['title'] )
     #print('Got a result! ID: %s', results['items'][0]['contentDetails']['upload']['videoId'] )
 
-def doWork():
-    for channel in CHANNELS:
+def doWork(whichList, whichFolder):
+    for channel in whichList:
         print("### Getting full list of videos for %s\n" % channel)
-        out_file = open("channel_data/%s.details" % channel, "w")
-        with open("channel_data/%s.items" % channel, "r") as ins:
-            counter = 0
-            batchString = ''
-            for line in ins:
-                batchString += line
-                batchString += ','
-                counter += 1
-                if (counter >= 49):
-                    videoDetails(out_file, service, part='snippet,contentDetails', id=batchString, fields='items(contentDetails/duration,id,snippet/publishedAt)')
-                    counter = 0
-                    batchString = ''
-        out_file.close()
+        if ( os.path.isfile( "{0}/{1}.items".format(whichFolder, channel) ) ):
+            out_file = open( "{0}/{1}.details".format(whichFolder, channel), "a")
+            with open( "{0}/{1}.items".format(whichFolder, channel), "r") as ins:
+                counter = 0
+                batchString = ''
+                for line in ins:
+                    batchString += line
+                    batchString += ','
+                    counter += 1
+                    if (counter >= 49):
+                        videoDetails(out_file, service, part='snippet,contentDetails', id=batchString, fields='items(contentDetails/duration,id,snippet/publishedAt,snippet/title)')
+                        counter = 0
+                        batchString = ''
+            if ( counter > 0 ):
+                videoDetails(out_file, service, part='snippet,contentDetails', id=batchString, fields='items(contentDetails/duration,id,snippet/publishedAt,snippet/title)')
+            out_file.close()
+        else:
+            print( "No items file for item %s\n" % channel )
 
 CHANNELS = []
 myutil.readInputFile( "channels.txt", CHANNELS )
-doWork()
+PLAYLISTS = []
+myutil.readInputFile( "playlists.txt", PLAYLISTS )
+print ("--------------Doing channels--------------")
+doWork(CHANNELS, "channel_data")
+print ("--------------Doing playlists--------------")
+doWork(PLAYLISTS, "playlist_data")

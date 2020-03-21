@@ -13,34 +13,38 @@
 #include videotato_common.ahk
 
 ; ##############################################################################################################################################
-; Videotato implementation for Chrome
+; Videotato implementation for Firefox
 ; ##############################################################################################################################################
 
 ; Overridden function from videotato_common
 SendToBrowser(controlSet) {
-    SendToChrome(controlSet)
+    SendToFirefox(controlSet)
 }
 
-; Helper function to send keys directly to Chrome if it's focused,
+; Helper function to send keys directly to Firefox if it's focused,
 ; otherwise use ControlFocus and ControlSend to do the work.
-SendToChrome(controlSet) {
-    if (IsChromeActive() = False) {
+SendToFirefox(controlSet) {
+
+    if (IsFirefoxActive() = False) {
         SetTitleMatchMode, 2
 
-        ControlGet, OutputVar, Hwnd,,Chrome_RenderWidgetHostHWND1, Google Chrome
-
-        ControlFocus,,ahk_id %outputvar%
-        ControlSend, , %controlSet% , Google Chrome
+        ;ControlGet, OutputVar, Hwnd,,MozillaWindowClass,Mozilla Firefox
+        ;ControlGet, OutputVar, Hwnd,,MozillaWindowClass
+        ;MsgBox %OutputVar%
+        ;ControlFocus,,ahk_id %OutputVar%
+        ;ControlFocus,,ahk_class MozillaWindowClass
+        ;ControlSend, , %controlSet% , Mozilla Firefox
+        ControlSend, ahk_parent, %controlSet% , ahk_class MozillaWindowClass
     } else {
         Send, %controlSet%
     }
 }
 
-; Helper function to see if the user already has Chrome focused.
+; Helper function to see if the user already has Firefox focused.
 ; ControlSend doesn't seem to work well when the window is already focused.
-IsChromeActive() {
+IsFirefoxActive() {
     WinGetClass, class, A
-    if (class = "Chrome_WidgetWin_1") {
+    if (class = "MozillaWindowClass") {
         return True
     } else {
         return False
