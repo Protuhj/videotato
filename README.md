@@ -76,23 +76,31 @@ Comment lines start with `#`.
 
 ## AutoHotkey
 
-Currently the only browser supported is Chrome, Firefox can be added in the future pretty easily (hopefully).
-
+### Chrome
 - `videotato_chrome.ahk` contains the script needed to actually "Do the Magic" while you're gaming/messing around on a different application.
     - To run this AutoHotkey script, right click on it and either go to 'Run Script'
     - Or right-click on it and go to 'Compile Script' and then run the `videotato_chrome.exe`.
 
+### Firefox
+- `videotato_firefox.ahk` contains the script needed to actually "Do the Magic" while you're gaming/messing around on a different application.
+    - To run this AutoHotkey script, right click on it and either go to 'Run Script'
+    - Or right-click on it and go to 'Compile Script' and then run the `videotato_firefox.exe`.
+
 #### Hot keys:
 ##### (view https://autohotkey.com/docs/KeyList.htm for a full list of possible hotkeys)
 
-- `F7`: cycles through tabs via the `ctrl+PgUp` hotkey that Chrome handles.
+- `F7`: cycles through tabs via the `ctrl+PgUp` hotkey that Chrome and Firefox handle.
 - `F12`: toggles the AutoHotkey script on or off, in case you don't want the script responding to key presses.
-- `LAlt+LShift+Del`: removes the last random video from all local data files.
+- `LAlt + LShift + Del`: removes the last random video from all local data files.
     - Use this when you don't ever want to play a video again.
     - It basically reads the contents of `result.txt` and searches the `*_data` folders for matches, and removes the `result.txt` contents from those files.
 - `LAlt + LShift + LCtrl + F5`: refresh the currently active tab
+- `LCtrl + Page Down`: Scroll down using Page Down
+- `LCtrl + Page Up`: Scroll up using Page Up
+- `LCtrl + LShift + Page Down`: Scroll down using the down arrow key
+- `LCtrl + LShift + Page Up`: Scroll up using the up arrow key
 
-##### With YouTube Chrome tab open:
+##### With YouTube tab open:
 - `Media_next`: Sends shift+n (capital N) to YouTube to hit the 'Next' button. This will tell YouTube to play the next video.
     - The `media_next` key requires you to have a keyboard with these media keys.
     - You might have an Fn key or dedicated media keys.

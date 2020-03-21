@@ -9,6 +9,10 @@
 ; LEFT alt + LEFT shift + delete            - Remove the last result's text from all output files (for videos you don't want to play again)
 ; LEFT ctrl + left arrow                    - Go back 10 seconds in a video (sends 'J' to tab)
 ; LEFT ctrl + right arrow                   - Go forward 10 seconds in a video (sends 'L' to tab)
+; LEFT CTRL + PAGE DOWN                     - Scroll down using Page Down
+; LEFT CTRL + PAGE UP                       - Scroll up using Page Up
+; LEFT CTRL + LEFT SHIFT + PAGE DOWN        - Scroll down using the down arrow key
+; LEFT CTRL + LEFT SHIFT + PAGE UP-         - Scroll down using the up arrow key
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #SingleInstance Force
 ; ##############################################################################################################################################
@@ -120,6 +124,7 @@ GoToUrl(videoIDOrFullURL) {
 
     ; Focus address bar then paste the clipboard to the URL box
     ; SendToBrowser("^l^v{Enter}")
+    ; Give these time to take effect, so sleep a little between each call
     SendToBrowser("^l")
     Sleep, 20
     SendToBrowser("^v")
