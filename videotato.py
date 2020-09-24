@@ -56,7 +56,7 @@ def activities_list_for_channelid(service, **kwargs):
     #print results
     while True:
         for result in results['items']:
-            if ( 'contentDetails' in result ):
+            if ( 'contentDetails' in result and 'upload' in result['contentDetails'] ):
                 VIDEOS.append( result['contentDetails']['upload']['videoId'] )
         print ("Found %i videos!\n" % len( VIDEOS ))
         if ( 'nextPageToken' in results ):
