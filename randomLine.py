@@ -110,24 +110,32 @@ if ( len( WHICH ) > 0 ):
             vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.items" % theChannel, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
+            if ( theVideo == "" ):
+                raise Exception("channel resulted in empty video: " + theChannel)
         elif ( which == "PLAYLISTS" ):
             print( "Picking a playlist." )
             thePlaylist = random.choice( PLAYLISTS ).strip().split( "," )[0]
             vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
+            if ( theVideo == "" ):
+                raise Exception("playlist resulted in empty video: " + thePlaylist)
         elif ( which == "MUSIC" ):
             print( "Picking a music playlist." )
             thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
             vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
+            if ( theVideo == "" ):
+                raise Exception("music playlist resulted in empty video: " + thePlaylist)
         elif ( which == "FULL_URL" ):
             print( "Picking a full url entry." )
             theSite = random.choice( FULL_URL ).strip().split( ", " )[0]
             vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r")
             theVideo = random_line( vidFile ).strip()
             vidFile.close()
+            if ( theVideo == "" ):
+                raise Exception("full url site resulted in empty video: " + theSite)
         else:
             assert False, "Invalid WHICH"
 

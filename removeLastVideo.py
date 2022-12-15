@@ -17,7 +17,7 @@ def removeTextInline( theText, theFile ):
             print( "Found " + theText + " in " + theFile )
             for line in fileinput.input(theFile, inplace = True):
                 if not theText in line:
-                    print (line)
+                    print (line, end='')
             if ( config.videotato_config['PLAY_SOUND_ON_DELETE'] is True ):
                 winsound.Beep(Freq,Dur)
 
