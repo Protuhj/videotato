@@ -38,13 +38,13 @@ def pickWhich():
     playlistLen = len ( PLAYLISTS )
     musicLen = len( MUSIC )
     fullURLLen = len ( FULL_URL )
-    if ( chanLen is 0 and musicLen is 0 and fullURLLen is 0 ):
+    if ( chanLen == 0 and musicLen == 0 and fullURLLen == 0 ):
         return "PLAYLISTS"
-    elif( chanLen is 0 and playlistLen is 0 and fullURLLen is 0 ):
+    elif( chanLen == 0 and playlistLen == 0 and fullURLLen == 0 ):
         return "MUSIC"
-    elif( playlistLen is 0 and musicLen is 0 and fullURLLen is 0 ):
+    elif( playlistLen == 0 and musicLen == 0 and fullURLLen == 0 ):
         return "CHANNELS"
-    elif ( chanLen is 0 and playlistLen is 0 and musicLen is 0 ):
+    elif ( chanLen == 0 and playlistLen == 0 and musicLen == 0 ):
         return "FULL_URL"
 
     chanWeight = len(CHANNELS) * CHANNELS_WEIGHT
@@ -104,40 +104,28 @@ else:
 if ( len( WHICH ) > 0 ):
     which = pickWhich()
     try:
-        if ( which is "CHANNELS" ):
+        if ( which == "CHANNELS" ):
             print( "Picking a channel." )
             theChannel = random.choice( CHANNELS ).strip()
-            try:
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.details" % theChannel, "r ")
-            except:
-                pass
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.items" % theChannel, "r ")
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/channel_data/%s.items" % theChannel, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
-        elif ( which is "PLAYLISTS" ):
+        elif ( which == "PLAYLISTS" ):
             print( "Picking a playlist." )
             thePlaylist = random.choice( PLAYLISTS ).strip().split( "," )[0]
-            try:
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.details" % thePlaylist, "r ")
-            except:
-                pass
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r ")
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/playlist_data/%s.items" % thePlaylist, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
-        elif ( which is "MUSIC" ):
+        elif ( which == "MUSIC" ):
             print( "Picking a music playlist." )
             thePlaylist = random.choice( MUSIC ).strip().split( "," )[0]
-            try:
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.details" % thePlaylist, "r ")
-            except:
-                pass
-                vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r ")
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/music_data/%s.items" % thePlaylist, "r")
             theVideo = random_line( vidFile ).split( ",")[0].strip()
             vidFile.close()
-        elif ( which is "FULL_URL" ):
+        elif ( which == "FULL_URL" ):
             print( "Picking a full url entry." )
             theSite = random.choice( FULL_URL ).strip().split( ", " )[0]
-            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r ")
+            vidFile = open( os.path.dirname( os.path.realpath(__file__) ) + "/full_url_site_data/%s.items" % theSite, "r")
             theVideo = random_line( vidFile ).strip()
             vidFile.close()
         else:
@@ -160,4 +148,4 @@ if ( len( WHICH ) > 0 ):
         for i in range(10, 5, -1): winsound.Beep(i * 100, 30)
 
 else:
-    print "Nothing to do!"
+    print ("Nothing to do!")

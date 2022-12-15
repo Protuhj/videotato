@@ -8,12 +8,12 @@ Perfect for gaming while playing random videos from YouTube channels or playlist
 
 ### Languages/Software
 - Windows
-- Python 2.7
+- Python >= 3
 - AutoHotkey
 - YouTube API V3
 
 ### Installation
-- Python 2.7: https://www.python.org/downloads/
+- Python >= 3: https://www.python.org/downloads/
 - AutoHotkey (latest version): https://autohotkey.com/download/
 
 ### Setup YouTube API Access
@@ -60,6 +60,11 @@ Then do the following:
     - Then hit 'Execute without OAuth'
     - If a channel is found, it will be the only entry in the Response at the bottom of the page for 'id'
     - Grab the `UC...` text and paste it into the channels.txt file.
+
+**Alternatively:**  
+
+-  View source on the channel's `About` page and search for "browse_id", the channel ID should be near it.
+
 
 ### Personalization: Playlists  and Music
 

@@ -12,8 +12,8 @@
 ; LEFT alt + LEFT shift + delete            - Remove the last result's text from all output files (for videos you don't want to play again)
 ; LEFT ctrl + left arrow                    - Go back 10 seconds in a video (sends 'J' to tab)
 ; LEFT ctrl + right arrow                   - Go forward 10 seconds in a video (sends 'L' to tab)
-; LEFT ctrl + PAGE DOWN                     - Scroll down using Page Down
-; LEFT ctrl + PAGE UP                       - Scroll up using Page Up
+; LEFT ctrl + ALT + PAGE DOWN               - Scroll down using Page Down
+; LEFT ctrl + ALT + PAGE UP                 - Scroll up using Page Up
 ; LEFT ctrl + LEFT SHIFT + PAGE DOWN        - Scroll down using the down arrow key
 ; LEFT ctrl + LEFT SHIFT + PAGE UP-         - Scroll down using the up arrow key
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,14 +106,14 @@ return
 return
 
 ; Scroll down a page
-; LEFT CTRL + PAGE DOWN
-<^PgDn::
+; LEFT CTRL + ALT + PAGE DOWN
+<^!PgDn::
     SendToBrowser("{PgDn}")
 return
 
 ; Scroll up a page
-; LEFT CTRL + PAGE UP
-<^PgUp::
+; LEFT CTRL + ALT + PAGE UP
+<^!PgUp::
     SendToBrowser("{PgUp}")
 return
 
@@ -141,19 +141,19 @@ GoToUrl(videoIDOrFullURL) {
 
     ; Cache clipboard contents
     temp := clipboardall
-
+    clipboard := ""
     ; Put the URL onto the clipboard
     clipboard := prefixStr
-
+    ClipWait, 2
     ; Focus address bar then paste the clipboard to the URL box
     ; SendToBrowser("^l^v{Enter}")
     ; Give these time to take effect, so sleep a little between each call
     SendToBrowser("^l")
-    Sleep, 20
+    Sleep, 25
     SendToBrowser("^v")
-    Sleep, 20
+    Sleep, 25
     SendToBrowser("{Enter}")
-
+    Sleep, 25
     ; Restore the cached clipboard contents
     clipboard := temp
 }
