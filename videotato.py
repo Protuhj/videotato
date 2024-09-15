@@ -132,7 +132,7 @@ def processChannels():
             # Clear out the list for the next call
             del VIDEOS[:]
         else:
-            print("### Getting full list of videos for %s\n" % channel)
+            print("### Getting full list of videos for {1} (id: {0})".format(channel, chanObj['name']))
             try:
                 # Getting the 'playlist' for all user videos works best for grabbing all videos.
                 playlistitems_for_playlistid(service, part='contentDetails', playlistId=channel.replace( 'UC', 'UU' ), maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
