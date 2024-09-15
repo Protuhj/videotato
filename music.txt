@@ -2,23 +2,27 @@
 # Entries are a comma-separated list of playlist ID, then cache-limit age in seconds.
 # If you set the cache-limit to -1, the playlist will never be updated, and the .items file for it will need to be deleted before it is updated.
 
+
+# Note: This file is deprecated, and you should edit music.py in order to get the most out of the tool.
+
+
 # New electronic music playlist, I think it's updated once a day?
-PLFPg_IUxqnZNTAbUMEZ76_snWd-ED5en7,76400
+PLFPg_IUxqnZNTAbUMEZ76_snWd-ED5en7,864000
 
 # Daily 40 music playlist, I think it's updated once a day?
-#PLFgquLnL59akEDVznnoh3KT0EM5DVczAq,76400
+#PLFgquLnL59akEDVznnoh3KT0EM5DVczAq,864000
 
 # Trap music mix
-RDQMARQLlfkN6JM,76400
+RDQMARQLlfkN6JM,864000
 
 # Retrowave music
-PLz7dAwOvcNgqRP9AI0F3ADxw8uR3yqteO
+#PLz7dAwOvcNgqRP9AI0F3ADxw8uR3yqteO
 
 # 90s music playlist
 PLZyqOyXxaVETqpHhT_c5GPmAPzhJpJ5K7,-1
 
 #Royalty Free Music
-PLC1og_v3eb4jE0bmdkWtizrSQ4zt86-3D,864000
+PLC1og_v3eb4jE0bmdkWtizrSQ4zt86-3D,-1
 
 #Breathe Carolina & Dropgun
 RDLles_PvHqAk,76400

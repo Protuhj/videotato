@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; F12                                       - toggle script on/off
-; F7                                        - switch Chrome tabs
+; F7                                        - switch Firefox tabs
 ; Media_next                                - Skip to next in playlist
 ; Media_play_pause                          - Play/pause video (sends space to tab)
 ; LEFT alt + LEFT shift + LEFT ctrl + F5    - refresh current tab (sends F5 to tab)
@@ -19,6 +19,11 @@
 ; Overridden function from videotato_common
 SendToBrowser(controlSet) {
     SendToFirefox(controlSet)
+}
+
+; Overridden function from videotato_common
+GoToUrl(videoIDOrFullURL) {
+    GoToUrl_Base(videoIDOrFullURL)
 }
 
 ; Helper function to send keys directly to Firefox if it's focused,

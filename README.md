@@ -1,4 +1,4 @@
-# videotato - v0.4
+# videotato - v0.5
 
 Watch random videos from YouTube without alt-tabbing to your browser.
 
@@ -44,14 +44,17 @@ Choose 'Other' as the type, and fill out the information it asks for.
 
 ### Personalization: Channels
 
-Open the channels.txt file to view the channels that I've pre-filled it with.
+Open the channels.py file to view the channels that I've pre-filled it with.
 Comment lines start with `#`.
 
-Each channel should be on its own line, and it MUST be the channel ID (the ID will start with 'UC')
+Each channel should be on its own line, and it MUST be the channel ID (the ID will start with 'UC').  
+Use the examples I've placed in the file to add/edit your own.  
+Set the weighting to 0 to disable a channel.  
+The name field is just for debug/display purposes.  
 
 - To get the channel ID, go to the channel's page on YouTube in a browser.
 - If their URL looks like: `https://www.youtube.com/channel/UC...`
-Then just grab the full `UC...` text and paste it into the channels.txt file.
+Then just grab the full `UC...` text and paste it into the channels.py file in the appropriate place.
 - If their URL looks like: `https://www.youtube.com/user/...`
 Then do the following:
 
@@ -66,17 +69,26 @@ Then do the following:
 -  View source on the channel's `About` page and search for "browse_id", the channel ID should be near it.
 
 
-### Personalization: Playlists  and Music
+### Personalization: Playlists and Music
 
-Open the playlists.txt file to view the channels that I've pre-filled it with.
-Comment lines start with `#`.
+Open the playlists.py or music.py file to view the channels/music that I've pre-filled them with.
+- Use the examples I've added to add/edit your own.  
+- Set the age field to <= 0 to not update the playlist. 
+  - "age" can be seconds or a 'time string' like "1w" or "7d"  
+    - age units: "s" for seconds -- "m" for minutes -- "h" for hours --  "d" for days -- "w" for weeks  
+- Set the weighting to 0 to disable an entry.  
+- The name field is just for debug/display purposes.  
 
-- Entries are a comma-separated list of playlist ID, then cache-limit age in seconds.
-    - A cache-limit age of '86400' means the playlist won't be queried until at least 24 hours have passed since the last time it was queried.
-    - A cache-limit age of '-1' means the playlist will never be queried again unless the `.items` file for the playlist is deleted.
-        - (Some playlists are static and will never be updated)
 
-- The playlist feature does not get deltas from the previous query, each time the playlists are updated, the full playlist is retrieved.
+- This feature does not get deltas from the previous query. Each time the playlists are updated, the **full** playlist is retrieved.
+
+### Personalization: Full URLs
+
+Open the full_url_sites.py file to see an example site I've pre-filled it with.
+
+The "id" field is an ID that will map to the file name that you'll fill with URLs to choose from.
+In the example entry, I set the id to 'example', so in the 'full_url_site_data' folder, I created the file "example.items" and entered in an example URL.  
+I also added some info on grabbing a show's URLs from HBO max, but actually grabbing all the URLs I left as an exercise to the user.
 
 
 ## AutoHotkey

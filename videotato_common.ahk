@@ -20,7 +20,9 @@
 #SingleInstance Force
 ; ##############################################################################################################################################
 ; Common functions for Chrome and Firefox
-; "SendToBrowser" must be implemented in the including scripts, this one cannot stand alone.
+; Functions to be implemented in the including scripts, this one cannot stand alone:
+;   SendToBrowser(command string) - specific logic needed to send the commands to the specific browser/sink
+;   GoToUrl(youtube ID or full URL) - default behavior is to just call GoToUrl_Base(..), you can change the behavior as needed for a sink I haven't added
 ; ##############################################################################################################################################
 
 ; Toggles the script on and off
@@ -96,13 +98,15 @@ return
 ; Go Back 10 seconds
 ; LEFT ctrl+ left arrow
 <^Left::
-    SendToBrowser("J")
+    ;SendToBrowser("J")
+    SendToBrowser("{Left}")
 return
 
 ; Go Forward 10 seconds
 ; LEFT ctrl+ right arrow
 <^Right::
-    SendToBrowser("L")
+    ;SendToBrowser("L")
+    SendToBrowser("{Right}")
 return
 
 ; Scroll down a page
@@ -129,7 +133,7 @@ return
     SendToBrowser("{Up}")
 return
 
-GoToUrl(videoIDOrFullURL) {
+GoToUrl_Base(videoIDOrFullURL) {
     prefixStr = ""
     if ( InStr( videoIDOrFullURL, "http", true ) ) {
         ; If the result has a complete URL, use it verbatim

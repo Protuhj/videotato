@@ -21,6 +21,11 @@ SendToBrowser(controlSet) {
     SendToChrome(controlSet)
 }
 
+; Overridden function from videotato_common
+GoToUrl(videoIDOrFullURL) {
+    GoToUrl_Base(videoIDOrFullURL)
+}
+
 ; Helper function to send keys directly to Chrome if it's focused,
 ; otherwise use ControlFocus and ControlSend to do the work.
 SendToChrome(controlSet) {

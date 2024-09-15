@@ -4,14 +4,29 @@ import time
 import myutil
 import httplib2
 import config
+import random
 from pprint import pprint
 
-from datetime import datetime
+from datetime import datetime, timezone,timedelta
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
+
+
+# From https://stackoverflow.com/a/3096934/16423400
+UNITS = {"s":"seconds", "m":"minutes", "h":"hours", "d":"days", "w":"weeks"}
+
+def convert_to_seconds(s):
+    try:
+        sec_val = int(s)
+        return sec_val
+    except:
+        count = int(s[:-1])
+        unit = UNITS[ s[-1] ]
+        td = timedelta(**{unit: count})
+        return td.seconds + 60 * 60 * 24 * td.days
 
 ### BEGIN YOUTUBE BOILERPLATE CODE
 
@@ -82,21 +97,26 @@ def playlistitems_for_playlistid(service, **kwargs):
             break;
     #print('Got a result! ID: %s', results['items'][0]['contentDetails']['upload']['videoId'] )
 
-
 # Process data from channels.txt
 def processChannels():
     print( "################# Processing Channels ##################" )
     if ( not os.path.isdir( "channel_data" ) ):
         os.makedirs( "channel_data" )
-    for channel in CHANNELS:
+    for chanObj in CHANNELS:
+        channel = chanObj['id']
+        if (chanObj['weight'] <= 0):
+            print("Skipping channel %s" % chanObj['name'])
+            continue
         # Check to see if the channel data has been grabbed at some point already
         # If it has, use the time in the .time file in order to get only the activity since the full list was retrieved.
         if ( os.path.isfile( "channel_data/%s.time" % channel ) ):
-            print("### Getting delta list of videos for %s\n" % channel)
+            print("### Getting delta list of videos for {1} (id: {0})".format(channel, chanObj['name']))
             timeFile = open("channel_data/%s.time" % channel, "r")
-            timestamp = timeFile.read()
+            timestamp = timeFile.read().strip()
             timeFile.close()
-            activities_list_for_channelid(service, part='contentDetails', channelId=channel, maxResults=50, publishedAfter=timestamp + 'Z', fields="nextPageToken,items(contentDetails(upload(videoId)))")
+            if ( timestamp.find("+") == -1 ):
+                timestamp += "Z"
+            activities_list_for_channelid(service, part='contentDetails', channelId=channel, maxResults=50, publishedAfter=timestamp, fields="nextPageToken,items(contentDetails(upload(videoId)))")
 
             if ( len( VIDEOS ) > 0 ):
                 if ( os.path.isfile( "channel_data/%s.items" % channel ) ):
@@ -108,7 +128,8 @@ def processChannels():
                     out_file.write('\n')
                 out_file.close()
             time_file = open("channel_data/%s.time" % channel, "w")
-            time_file.write(datetime.now().isoformat())
+            time_file.write(datetime.now(timezone.utc).isoformat())
+            # Clear out the list for the next call
             del VIDEOS[:]
         else:
             print("### Getting full list of videos for %s\n" % channel)
@@ -128,130 +149,149 @@ def processChannels():
             except:
                 print( "####### Failed to query playlist: %s\n" %thePlaylist )
 
-# Process data from the playlists.txt
-def processPlaylists():
-    print( "################# Processing Playlists ##################" )
-    if ( not os.path.isdir( "playlist_data" ) ):
-        os.makedirs( "playlist_data" )
-    for playlist in PLAYLISTS:
-        tokens = playlist.split( "," )
-        thePlaylist = tokens[0]
 
-        # Default to 7 days cache time for playlists
-        age_limit = 604800
+# Process data from the MUSIC or PLAYLISTS array
+# Music is just a specialization of the PLAYLIST type, to allow for different weightings
+# Sometimes I just want music, ya know?
+def processPlaylist(isMusic = False):
+    if isMusic:
+        print( "################# Processing Music ##################" )
+        data_dir = "music_data"
+        which_array = MUSIC
+        info_string_token = "music playlist"
+    else:
+        print( "################# Processing Playlists ##################" )
+        data_dir = "playlist_data"
+        which_array = PLAYLISTS
+        info_string_token = "playlist"
+
+    if ( not os.path.isdir( data_dir ) ):
+        os.makedirs( data_dir )
+    for array_obj in which_array:
+        thePlaylistID = array_obj['id']
         doGet = True
-
-        if ( len( tokens ) > 1 ):
-            age_limit = int( tokens[1] )
-
-        if ( os.path.isfile( "playlist_data/%s.items" % thePlaylist ) ):
-            if ( age_limit is -1 ):
-                print( "Not getting playlist items for %s, its age limit is infinite (-1)" % thePlaylist )
+        age_limit = convert_to_seconds( array_obj['age'] )
+        if ( os.path.isfile( f"{data_dir}/{thePlaylistID}.items" ) ):
+            if ( age_limit <= 0 ):
+                print( f"Not getting {info_string_token} items for {array_obj['name']}, its age limit is <= 0" )
                 doGet = False
-            elif ( os.path.isfile( "playlist_data/%s.time" % thePlaylist ) ):
-                timeFile = open( "playlist_data/%s.time" % thePlaylist, "r" )
+            elif ( os.path.isfile( f"{data_dir}/{thePlaylistID}.time" ) ):
+                timeFile = open( f"{data_dir}/{thePlaylistID}.time", "r" )
                 timestamp = timeFile.read()
                 timeFile.close()
                 timestamp = int( timestamp.strip() )
                 if ( ( int( time.time() ) - timestamp ) < age_limit ):
-                    print( "Playlist %s isn't out of date yet. %i seconds to go before it's old. Age limit is: %i seconds" % ( thePlaylist, age_limit - ( int( time.time() ) - timestamp ), age_limit ) )
+                    print( f"The {info_string_token} {array_obj['name']} isn't out of date yet. {age_limit - ( int( time.time() ) - timestamp )} seconds to go before it's old. Age limit is: {age_limit} seconds" )
                     doGet = False
         if ( doGet ):
-            print( "### Getting full list of videos for playlist %s\n" % thePlaylist )
+            print( f"### Getting full list of videos for {info_string_token} {array_obj['name']}\n" )
             try:
-                playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
-                out_file = open("playlist_data/%s.items" % thePlaylist, "w")
+                playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylistID, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
+                out_file = open(f"{data_dir}/{thePlaylistID}.items", "w")
                 for video in VIDEOS:
                     out_file.write( video )
                     out_file.write('\n')
                 out_file.close()
-                time_file = open("playlist_data/%s.time" % thePlaylist, "w")
+                time_file = open(f"{data_dir}/{thePlaylistID}.time", "w")
                 time_file.write( str( int( time.time() ) ) )
+                # Clear out the list for the next call
                 del VIDEOS[:]
             except:
-                print( "####### Failed to query playlist: %s\n" %thePlaylist )
-
-# Process data from the music.txt
-def processMusic():
-    print( "################# Processing Music ##################" )
-    if ( not os.path.isdir( "music_data" ) ):
-        os.makedirs( "music_data" )
-    for music_playlist in MUSIC:
-        tokens = music_playlist.split( "," )
-        thePlaylist = tokens[0]
-
-        # Default to 7 days cache time for music
-        age_limit = 604800
-        doGet = True
-
-        if ( len( tokens ) > 1 ):
-            age_limit = int( tokens[1] )
-
-        if ( os.path.isfile( "music_data/%s.items" % thePlaylist ) ):
-            if ( age_limit is -1 ):
-                print( "Not getting music playlist items for %s, its age limit is infinite (-1)" % thePlaylist )
-                doGet = False
-            elif ( os.path.isfile( "music_data/%s.time" % thePlaylist ) ):
-                timeFile = open( "music_data/%s.time" % thePlaylist, "r" )
-                timestamp = timeFile.read()
-                timeFile.close()
-                timestamp = int( timestamp.strip() )
-                if ( ( int( time.time() ) - timestamp ) < age_limit ):
-                    print( "Music playlist %s isn't out of date yet. %i seconds to go before it's old. Age limit is: %i seconds" % ( thePlaylist, age_limit - ( int( time.time() ) - timestamp ), age_limit ) )
-                    doGet = False
-        if ( doGet ):
-            print( "### Getting full list of videos for music playlist %s\n" % thePlaylist )
-            try:
-                playlistitems_for_playlistid(service, part='contentDetails', playlistId=thePlaylist, maxResults=50, fields="nextPageToken,items(contentDetails(videoId))")
-                out_file = open("music_data/%s.items" % thePlaylist, "w")
-                for video in VIDEOS:
-                    out_file.write( video )
-                    out_file.write('\n')
-                out_file.close()
-                time_file = open("music_data/%s.time" % thePlaylist, "w")
-                time_file.write( str( int( time.time() ) ) )
-                del VIDEOS[:]
-            except:
-                print( "####### Failed to query playlist: %s\n" %thePlaylist )
+                print( f"####### Failed to query {info_string_token}: {array_obj['name']}\n")
 
 VIDEOS = []
-CHANNELS = []
 
 #-- Channels --#
-with open("channels.txt", "r") as ins:
-    myutil.readInputFile( "channels.txt", CHANNELS )
+try:
+    exec(open("./channels.py").read())
+except Error as e:
+    print("CHANNELS not found, loading from channels.txt: " + str(e))
+    CHANNELS = []
+    if ( os.path.isfile( "channels.txt" ) ):
+        myutil.readInputFile( "channels.txt", CHANNELS )
+        # converting from old format to new object format
+        CHANNELS_COPY = []
+        for channel in CHANNELS:
+            CHANNELS_COPY.append({"id": channel, "weight": 1, "channel": "unknown"})
+        CHANNELS = CHANNELS_COPY
+    else:
+        print("channels.txt doesn't exist!")
+
 
 if ( len( CHANNELS ) > 0 ):
     processChannels()
 else:
-    print( "No channels in channels.txt to process!\n" )
+    print( "No channels to process!\n" )
 
 #-----------#
 
 #-- PLAYLISTS --#
+try:
+    exec(open("./playlists.py").read())
+except Error as e:
+    print("PLAYLISTS not found, loading from playlists.txt: " + str(e))
+    PLAYLISTS = []
+    if ( os.path.isfile( "playlists.txt" ) ):
+        myutil.readInputFile( "playlists.txt", PLAYLISTS )
+        # converting from old format to new object format
+        PLAYLISTS_COPY = []
+        for playlist in PLAYLISTS:
+            tokens = playlist.split( "," )
+            thePlaylist = tokens[0]
 
-PLAYLISTS = []
-if ( os.path.isfile( "playlists.txt" ) ):
-    myutil.readInputFile( "playlists.txt", PLAYLISTS )
+            # Default to 7 days cache time
+            age_limit = "7d"
 
-if ( len( PLAYLISTS ) > 0 ):
-    processPlaylists()
+            if ( len( tokens ) > 1 ):
+                age_limit = int( tokens[1] )
+                if age_limit > 0:
+                    age_limit = tokens + "s"
+                else:
+                    age_limit = "0"
+            PLAYLISTS_COPY.append({"id": thePlaylist,  "age" : age_limit, "weight": 1, "name": "unknown"})
+        PLAYLISTS = PLAYLISTS_COPY
+    else:
+        print("playlists.txt doesn't exist!")
+
+if ( len( PLAYLISTS ) > 0):
+    processPlaylist(False)
 else:
-    print( "No playlists in playlists.txt to process!\n" )
+    print( "No playlists to process!\n" )
 
 #-------------#
 
 #-- MUSIC --#
+try:
+    exec(open("./music.py").read())
+except Error as e:
+    print("MUSIC not found, loading from music.txt: " + str(e))
+    MUSIC = []
+    if ( os.path.isfile( "music.txt" ) ):
+        myutil.readInputFile( "music.txt", MUSIC )
+        # converting from old format to new object format
+        MUSIC_COPY = []
+        for music_playlist in MUSIC:
+            tokens = music_playlist.split( "," )
+            thePlaylist = tokens[0]
 
-MUSIC = []
-if ( os.path.isfile( "music.txt" ) ):
-    myutil.readInputFile( "music.txt", MUSIC )
+            # Default to 7 days cache time for music
+            age_limit = "7d"
 
+            if ( len( tokens ) > 1 ):
+                age_limit = int( tokens[1] )
+                if age_limit > 0:
+                    age_limit = tokens + "s"
+                else:
+                    age_limit = "0"
+            MUSIC_COPY.append({"id": thePlaylist,  "age" : age_limit, "weight": 1, "name": "unknown"})
+        MUSIC = MUSIC_COPY
+    else:
+        print("music.txt doesn't exist!")
 
 if ( len( MUSIC ) > 0 ):
-    processMusic()
+    processPlaylist(True)
 else:
-    print( "No music in music.txt to process!\n" )
+    print( "No music to process!\n" )
 
 if ( not os.path.isdir( "full_url_site_data" ) ):
     os.makedirs( "full_url_site_data" )
