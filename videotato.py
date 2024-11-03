@@ -104,9 +104,14 @@ def processChannels():
         os.makedirs( "channel_data" )
     for chanObj in CHANNELS:
         channel = chanObj['id']
-        if (chanObj['weight'] <= 0):
-            print("Skipping channel %s" % chanObj['name'])
+        # 'noupdate' doesn't have to be set, so use the .get(key, default) form
+        if chanObj.get("noupdate", False):
+            print(f"Not updating channel {chanObj['name']} due to 'noupdate' being True.")
             continue
+        elif (chanObj['weight'] <= 0):
+            print(f"Skipping channel {chanObj['name']} due to weight being <= 0")
+            continue
+
         # Check to see if the channel data has been grabbed at some point already
         # If it has, use the time in the .time file in order to get only the activity since the full list was retrieved.
         if ( os.path.isfile( "channel_data/%s.time" % channel ) ):
@@ -169,8 +174,12 @@ def processPlaylist(isMusic = False):
         os.makedirs( data_dir )
     for array_obj in which_array:
         thePlaylistID = array_obj['id']
+        # 'noupdate' doesn't have to be set, so use the .get(key, default) form
+        if array_obj.get("noupdate", False):
+            print(f"Not updating playlist {array_obj['name']} due to 'noupdate' being True.")
+            continue
         doGet = True
-        age_limit = convert_to_seconds( array_obj['age'] )
+        age_limit = convert_to_seconds( array_obj.get("age", "7d") )
         if ( os.path.isfile( f"{data_dir}/{thePlaylistID}.items" ) ):
             if ( age_limit <= 0 ):
                 print( f"Not getting {info_string_token} items for {array_obj['name']}, its age limit is <= 0" )

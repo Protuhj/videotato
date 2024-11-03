@@ -8,7 +8,9 @@
 ##
 
 
+# You can optionally set the "noupdate" field to True if you don't want to retrieve any new updates for a given channel
 CHANNELS = [
+    { "id": "UCsB0LwkHPWyjfZ-JwvtwEXw", "weight": 10, "name": "Achievement Hunter", "noupdate": True},
     { "id": "UCZYTClx2T1of7BRZ86-8fow", "weight": 2, "name": "SciShow"},
     { "id": "UCrMePiHCWG4Vwqv3t7W9EFg", "weight": 2, "name": "SciShow Space"},
 ]
